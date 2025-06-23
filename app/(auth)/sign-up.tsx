@@ -83,7 +83,22 @@ const signIn = () => {
       // Set 'pendingVerification' to true to display second form
       // and capture OTP code
       setPendingVerification(true)
-    } catch (err) {
+    } catch (err: any) {
+      // Try to parse Clerk error for already used email
+      if (err && err.errors && Array.isArray(err.errors)) {
+        const emailExistsError = err.errors.find((e: any) => e.code === 'form_identifier_exists');
+        if (emailExistsError) {
+          setEmailError(emailExistsError.message || 'That email address is taken. Please try another.');
+          setGeneralError('');
+          return;
+        }
+        // Show first error if exists
+        if (err.errors[0]?.message) {
+          setGeneralError(err.errors[0].message);
+          return;
+        }
+      }
+      setGeneralError('An error occurred. Please try again.');
       console.error(JSON.stringify(err, null, 2))
     } finally{
       setIsLoading(false)
@@ -130,7 +145,7 @@ const signIn = () => {
             mode='outlined'
             keyboardType='email-address'
             selectionColor={theme.border}
-            style={[styles.inputBox, { backgroundColor: theme.primary, borderColor: emailError ? 'red' : theme.border }]}
+            style={[styles.inputBox, { backgroundColor: theme.secBackGround, borderColor: emailError ? 'red' : theme.border }]}
             value={emailAddress}
             onChangeText={text => {
               setEmail(text);
@@ -158,7 +173,7 @@ const signIn = () => {
             onBlur={handlePasswordBlur}
             value={password}
             selectionColor={theme.border}
-            style={[styles.inputBox, { backgroundColor: theme.primary, borderColor: passwordError ? 'red' : theme.border }]}
+            style={[styles.inputBox, { backgroundColor: theme.secBackGround, borderColor: passwordError ? 'red' : theme.border }]}
           />
           {passwordError ? <Text style={{ color: 'red', marginLeft: 5 }}>{passwordError}</Text> : null}
           {PendingVerification &&
@@ -168,7 +183,7 @@ const signIn = () => {
               value={code}
               onChangeText={setCode}
               selectionColor={theme.border}
-              style={[styles.inputBox, { backgroundColor: theme.primary }]}
+              style={[styles.inputBox, { backgroundColor: theme.secBackGround }]}
             />
           }
 

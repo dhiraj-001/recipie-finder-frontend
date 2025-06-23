@@ -69,7 +69,7 @@ const signIn = () => {
             label='Email'
             mode='outlined'
             selectionColor={theme.border}
-            style={[styles.inputBox, { backgroundColor: theme.primary }]}
+            style={[styles.inputBox, { backgroundColor: theme.secBackGround }]}
             value={email}
             onChangeText={setEmail}
           />
@@ -86,7 +86,7 @@ const signIn = () => {
               />
             }
             selectionColor={theme.border}
-            style={[styles.inputBox, { backgroundColor: theme.primary }]}
+            style={[styles.inputBox, { backgroundColor: theme.secBackGround }]}
           />
           {errorMessage ? (
             <Text style={{ color: 'red', marginBottom: 10 }}>{errorMessage}</Text>
