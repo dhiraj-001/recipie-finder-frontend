@@ -1,21 +1,21 @@
 
 const darkTheme = {
-  primary: "#8B593E",
-  background: "#FFF8F3",
-  text: "#4A3428",
-  border: "#E5D3B7",
-  white: "#FFFFFF",
-  textLight: "#9A8478",
-  card: "#FFFFFF",
-  shadow: "#000000",
+  primary: "#837F75",
+  background: "#414851",
+  text: "#3c424b",
+  border: "#798083",
+  cardLight: "#F0F1EE",
+  textLight: "#f2f4f1",
+  card: "#6E6A66",
+  shadow: "#9B9CA7",
 };
 
 const lightTheme = {
   primary: "#00B5B5",
   background: "#E8F6F6",
   text: "#000",
-  border: "#B2E8E8",
-  white: "#FFFFFF",
+  border: "#88bbe7",
+  cardLight: "#a1c0e8",
   textLight: "#66D9D9",
   card: "#FFFFFF",
   shadow: "#000000",

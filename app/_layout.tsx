@@ -5,15 +5,18 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Provider, useDispatch } from "react-redux";
 import store from "./redux/store";
+import { PaperProvider } from 'react-native-paper';
 
 export default function RootLayout() {
   return (
     <ClerkProvider tokenCache={tokenCache}>
       <Provider store={store}>
-      <SafeAreaView style={{ flex: 1 }}>
-          <StatusBar style="auto" />
-          <Slot />
-        </SafeAreaView>
+        <PaperProvider>
+          <SafeAreaView style={{ flex: 1 }}>
+            <StatusBar style="auto" />
+            <Slot />
+          </SafeAreaView>
+        </PaperProvider>
       </Provider>
     </ClerkProvider>
   );
