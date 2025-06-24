@@ -5,7 +5,7 @@ export const mealAPI = {
   searchMealByName: async (query) =>{
     try {
       const res = await fetch(`${BASE_URL}/search.php?s=${encodeURIComponent(query)}`)
-      const data = res.json()
+      const data =await res.json()
       return data.meals || []
     } catch (error) {
       console.log("Error fetching meal",error)
@@ -16,7 +16,7 @@ export const mealAPI = {
   searchMealDetail: async (id) =>{
     try {
       const res = await fetch(`${BASE_URL}/lookup.php?i=${id}`)
-      const data = res.json()
+      const data =await res.json()
       return data.meal || []
     } catch (error) {
       console.log("Error fetching meal detail",error)
@@ -38,8 +38,19 @@ export const mealAPI = {
   mealCategory:async () =>{
     try {
       const res = await fetch(`${BASE_URL}/categories.php`)
-      const data = res.json()
-      return data.meal || []
+      const data =await res.json()
+      return data.categories || []
+    } catch (error) {
+      console.log("Error fetching meal categories",error)
+      return [];
+    }
+  },
+
+  mealByCategory: async (category) =>{
+    try {
+      const res = await fetch(`${BASE_URL}/filter.php?c=${encodeURIComponent(category)}`)
+      const data =await res.json()
+      return data.meals || []
     } catch (error) {
       console.log("Error fetching meal categories",error)
       return [];

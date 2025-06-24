@@ -1,5 +1,5 @@
-import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native'
-import React, { useState } from 'react'
+import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, useColorScheme } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import store from '../redux/store';
 import { THEMES } from '@/constants/colors';
@@ -7,6 +7,7 @@ import { Button, TextInput } from 'react-native-paper';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useSignIn } from '@clerk/clerk-expo';
 import { useRouter } from 'expo-router';
+import { setTheme } from '../redux/Slices/themeSlice';
 
 const signIn = () => {
   const themeName = useSelector((state: ReturnType<typeof store.getState>) => state.theme.theme);
@@ -19,6 +20,7 @@ const signIn = () => {
   const { signIn, setActive, isLoaded } = useSignIn()
   const router = useRouter()
   const [errorMessage, setErrorMessage] = useState('')
+
 
   const handleSignIn = async() => {
     setIsLoading(true)

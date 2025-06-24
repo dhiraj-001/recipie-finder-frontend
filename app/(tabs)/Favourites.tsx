@@ -8,26 +8,17 @@ import { useClerk } from '@clerk/clerk-expo'
 import * as Linking from 'expo-linking'
 import { THEMES } from '@/constants/colors';
 import store from '../redux/store';
-
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Redirect } from 'expo-router';
 
 const index = () => {
-  const color = useColorScheme()
-  const dispatch = useDispatch()
+  
   const { signOut } = useClerk()
-
-  useEffect(() => {
-    if (color === "dark") {
-      dispatch(setTheme("dark"));
-    } else {
-      dispatch(setTheme("light"));
-    }
-  }, [color, dispatch]);
-
   const handleSignOut = async () => {
     try {
       await signOut()
       // Redirect to your desired page
-      Linking.openURL(Linking.createURL('/'))
+      
     } catch (err) {
       // See https://clerk.com/docs/custom-flows/error-handling
       // for more info on error handling
@@ -41,12 +32,15 @@ const index = () => {
   return (
     <ScrollView style={[{ backgroundColor: theme.background }]}>
       <SafeAreaView style={[styles.maincontainer,]}>
-        <TouchableOpacity onPress={handleSignOut}>
-          <Text>Sign out</Text>
+        <View style={[styles.headerBox]}>
+          <TouchableOpacity onPress={handleSignOut}>
+            <MaterialIcons name="logout" size={24} color={theme.border} />
           </TouchableOpacity>
-        
-      </SafeAreaView> 
-      </ScrollView>
+        </View>
+
+
+      </SafeAreaView>
+    </ScrollView>
   )
 }
 
@@ -56,6 +50,9 @@ export default index
 
 const styles = StyleSheet.create({
   maincontainer: {
-
+    marginHorizontal: 10
+  },
+  headerBox: {
+    marginTop: 10
   }
 })

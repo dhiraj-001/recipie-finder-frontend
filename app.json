@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MyTasks",
-    "slug": "MyTasks",
+    "name": "Taste Trove",
+    "slug": "TasteTrove",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -38,6 +38,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "f95e7a95-4237-4074-a075-d4313680ac7c"
+      }
     }
   }
 }

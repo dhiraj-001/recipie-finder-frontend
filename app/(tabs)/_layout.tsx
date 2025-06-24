@@ -2,17 +2,40 @@ import { Redirect, Tabs } from "expo-router";
 import { useAuth } from "@clerk/clerk-expo";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { THEMES } from "@/constants/colors";
 import store from "../redux/store";
-import { View } from 'react-native';
+import { ActivityIndicator, useColorScheme, View } from 'react-native';
+import { useEffect } from "react";
+import { setTheme } from "../redux/Slices/themeSlice";
 
 const TabsLayout = () => {
   const { isSignedIn } = useAuth();
-  if (!isSignedIn) return <Redirect href="/(auth)/sign-in" />
-
   const themeName = useSelector((state: ReturnType<typeof store.getState>) => state.theme.theme);
   const theme = THEMES[themeName as keyof typeof THEMES];
+
+  const color = useColorScheme()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (color === "dark") {
+      dispatch(setTheme("dark"));
+    } else {
+      dispatch(setTheme("light"));
+    }
+  }, [color, dispatch]);
+
+
+  if (isSignedIn === undefined) {
+    // Fallback UI while auth state is loading
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+  if (!isSignedIn) return <Redirect href="/(auth)/sign-in" />
+
   return (
     <View style={{ flex: 1, backgroundColor: theme.background }}>
       <Tabs
@@ -25,9 +48,6 @@ const TabsLayout = () => {
           tabBarStyle: {
             backgroundColor: theme.secBackGround,
             borderTopWidth:0,
-            borderRadius:20,
-            marginBottom:15,
-            marginHorizontal:15,
             justifyContent:'center',
             alignContent:'center',
             alignItems:'center',

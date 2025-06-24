@@ -12,15 +12,15 @@ const darkTheme = {
 };
 
 const lightTheme = {
-  primary: "#00B5B5",
-  background: "#E8F6F6",
-  secBackGround: "#023E8A",
-  text: "#000",
-  border: "#88bbe7",
-  cardLight: "#a1c0e8",
-  textLight: "#66D9D9",
-  card: "#FFFFFF",
-  shadow: "#000000",
+  primary: "#c77dff",
+  background: "#EDF2FB",
+  secBackGround: "#ABC4FF",
+  text: "#10002b",
+  border: "#a663cc",
+  cardLight: "#8093f1",
+  textLight: "#10002b",
+  card: "#ABC4FF",
+  shadow: "#ABC4FF",
 };
 
 // const forestTheme = {

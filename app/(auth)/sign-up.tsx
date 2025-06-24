@@ -1,5 +1,5 @@
-import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native'
-import React, { useState } from 'react'
+import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, useColorScheme } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import store from '../redux/store';
 import { THEMES } from '@/constants/colors';
@@ -7,8 +7,11 @@ import { Button, TextInput } from 'react-native-paper';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useSignUp } from '@clerk/clerk-expo';
 import { useRouter } from 'expo-router';
+import { setTheme } from '../redux/Slices/themeSlice';
 
 const signIn = () => {
+
+
   const themeName = useSelector((state: ReturnType<typeof store.getState>) => state.theme.theme);
   const theme = THEMES[themeName as keyof typeof THEMES];
 
@@ -126,6 +129,21 @@ const signIn = () => {
     }
   }
 
+  // Handler for social sign up
+  // const handleSocialSignUp = async (provider: 'oauth_google' | 'oauth_facebook' | 'oauth_apple') => {
+  //   if (!signUp) return;
+  //   try {
+  //     // TODO: Set your app's deep link redirect URLs below
+  //     await signUp.authenticateWithRedirect({
+  //       strategy: provider,
+  //       redirectUrl: 'mytasks://redirect', // <-- Set this to your app's deep link
+  //       redirectUrlComplete: 'mytasks://redirect-complete', // <-- Set this to your app's deep link for completion
+  //     });
+  //     // Clerk will handle the redirect and session
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={[styles.container, { backgroundColor: theme.background }]}>
@@ -201,7 +219,6 @@ const signIn = () => {
             labelStyle={[styles.txtBtn, { color: theme.textLight }]}
             onPress={PendingVerification ? onVerifyPress : onSignUpPress}
             disabled={!PendingVerification && (isLoading || !canSignUp)}
-            
           >
             {isLoading ? (
               <ActivityIndicator color={theme.textLight} />
@@ -209,6 +226,34 @@ const signIn = () => {
               emailAddress ? "Verify" : "Sign Up"
             )}
           </Button>
+
+          {/* Social sign up buttons */}
+          {/* <View style={{ marginVertical: 20 }}>
+            <Button
+              icon="google"
+              mode="outlined"
+              onPress={() => handleSocialSignUp('oauth_google')}
+              style={{ marginBottom: 10 }}
+            >
+              Sign up with Google
+            </Button>
+            <Button
+              icon="facebook"
+              mode="outlined"
+              onPress={() => handleSocialSignUp('oauth_facebook')}
+              style={{ marginBottom: 10 }}
+            >
+              Sign up with Facebook
+            </Button>
+            <Button
+              icon="apple"
+              mode="outlined"
+              onPress={() => handleSocialSignUp('oauth_apple')}
+            >
+              Sign up with Apple
+            </Button>
+          </View> */}
+
           <View style={[styles.belowTxtBox, {}]}>
             <Text style={[{ color: theme.textLight }]}>Already have an account ? </Text>
             <TouchableOpacity onPress={() => { router.navigate("/sign-in") }}>
