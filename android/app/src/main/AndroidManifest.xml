@@ -25,7 +25,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="mytasks"/>
-        <data android:scheme="exp+tastetrove"/>
+        <data android:scheme="exp+taste-trove"/>
       </intent-filter>
     </activity>
   </application>

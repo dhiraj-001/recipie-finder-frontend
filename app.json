@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Taste Trove",
-    "slug": "TasteTrove",
+    "slug": "taste-trove",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -42,7 +42,12 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "f95e7a95-4237-4074-a075-d4313680ac7c"
+        "projectId": "5815c3ac-b5b0-4640-be3e-cb6dd562021e"
+      },
+      "doctor": {
+        "reactNativeDirectoryCheck": {
+          "listUnknownPackages": false
+        }
       }
     }
   }
