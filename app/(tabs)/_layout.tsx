@@ -39,12 +39,12 @@ const TabsLayout = () => {
   return (
     <View style={{ flex: 1, backgroundColor: theme.background }}>
       <Tabs
+      
         screenOptions={{
           headerShown: false,
           animation: 'shift',
-          tabBarActiveBackgroundColor: theme.shadow,
-          tabBarActiveTintColor: theme.background,
-          tabBarInactiveTintColor:theme.cardLight,
+          tabBarActiveTintColor: theme.textLight,
+          tabBarInactiveTintColor:theme.text,
           tabBarStyle: {
             backgroundColor: theme.secBackGround,
             borderTopWidth:0,
@@ -54,13 +54,14 @@ const TabsLayout = () => {
           }
         }}
       >
-        <Tabs.Screen
+      
+
+            <Tabs.Screen
           name="index"
           options={{
             title: 'Home',
             tabBarIcon: ({ color, size }) => <AntDesign name="home" size={size} color={color} />
           }} />
-
         <Tabs.Screen
           name="Search"
           options={{

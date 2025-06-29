@@ -23,6 +23,18 @@ type Category = {
   strCategoryThumb: string;
 };
 
+interface Recipe {
+  area: string;
+  category: string;
+  id: string;
+  ingredients: { ingredient: string; measure: string }[];
+  instructions: string[];
+  name: string;
+  tags: string[];
+  thumbnail: string;
+  youtube: string;
+}
+
 const index = () => {
   const color = useColorScheme()
   const dispatch = useDispatch()
@@ -42,7 +54,7 @@ const index = () => {
 
   const [featured, setFeatured] = useState<ReturnType<typeof mealAPI.transformMealData> | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [catMeal, setCatMeal] = useState<{ idMeal: string; strMeal: string, strMealThumb: string; }[]>([]);
+  const [catMeal, setCatMeal] = useState<Recipe[]>([]);
   const [mealShowCategory, setMealShowCategory] = useState<string>('lamb')
 
   useEffect(() => {
@@ -71,8 +83,16 @@ const index = () => {
 
   const fetchByCategories = async (mealShowCategory: string) => {
     const res = await mealAPI.mealByCategory(mealShowCategory)
-    setCatMeal(res.slice(0, 30))
+    const mealsArray = await Promise.all(
+      res.map(async(item:{idMeal:string, strMeal:string, strMealThumb:string})=>{
+        const data = await mealAPI.searchMealByName(item.strMeal)
+         return mealAPI.transformMealData(data[0])
+      })
+    )
+    setCatMeal(mealsArray.filter((meal):meal is Recipe => meal !== null))
   }
+
+
 
   return (
     <ScrollView
@@ -146,7 +166,6 @@ const index = () => {
     </ScrollView>
   )
 }
-
 
 
 export default index
