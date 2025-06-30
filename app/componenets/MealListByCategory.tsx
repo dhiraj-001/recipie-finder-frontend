@@ -51,9 +51,6 @@ const MealListByCategory: React.FC<Props> = ({ meals }) => {
               }]}>{item.area}</Text>
 
             </View>
-
-
-
           </ImageBackground>
         </View>
       )}

@@ -1,20 +1,18 @@
 import { ImageBackground, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { use, useState } from 'react'
 import { useColorScheme } from "react-native";
 import { useEffect } from "react";
 import { setTheme, switchTheme } from '../redux/Slices/themeSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useClerk } from '@clerk/clerk-expo'
-import * as Linking from 'expo-linking'
 import { THEMES } from '@/constants/colors';
 import store from '../redux/store';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Octicons from '@expo/vector-icons/Octicons';
 import { mealAPI } from "../../services/mealAPI.js"
-import { Card, Chip } from 'react-native-paper';
-import { FlashList } from "@shopify/flash-list";
+import { ActivityIndicator, Card, Chip } from 'react-native-paper';
 import MealListByCategory from '../componenets/MealListByCategory';
-
+import { Recipe } from '@/types/types';
 // Define Category type
 type Category = {
   idCategory: string;
@@ -23,22 +21,10 @@ type Category = {
   strCategoryThumb: string;
 };
 
-interface Recipe {
-  area: string;
-  category: string;
-  id: string;
-  ingredients: { ingredient: string; measure: string }[];
-  instructions: string[];
-  name: string;
-  tags: string[];
-  thumbnail: string;
-  youtube: string;
-}
 
 const index = () => {
   const color = useColorScheme()
   const dispatch = useDispatch()
-  const { signOut } = useClerk()
 
   useEffect(() => {
     if (color === "dark") {
@@ -51,11 +37,11 @@ const index = () => {
 
   const themeName = useSelector((state: ReturnType<typeof store.getState>) => state.theme.theme);
   const theme = THEMES[themeName as keyof typeof THEMES];
-
   const [featured, setFeatured] = useState<ReturnType<typeof mealAPI.transformMealData> | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [catMeal, setCatMeal] = useState<Recipe[]>([]);
-  const [mealShowCategory, setMealShowCategory] = useState<string>('lamb')
+  const [mealShowCategory, setMealShowCategory] = useState<string>('')
+  const [categoryByLoading, setCategoryByLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -74,6 +60,7 @@ const index = () => {
       }
       setCategories(categories);
       setMealShowCategory(categories[0].strCategory);
+      setCategoryByLoading(true)
       fetchByCategories(mealShowCategory);
     }
 
@@ -81,15 +68,20 @@ const index = () => {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    fetchByCategories(mealShowCategory)
+  }, [mealShowCategory])
+
   const fetchByCategories = async (mealShowCategory: string) => {
     const res = await mealAPI.mealByCategory(mealShowCategory)
     const mealsArray = await Promise.all(
-      res.map(async(item:{idMeal:string, strMeal:string, strMealThumb:string})=>{
+      res.map(async (item: { idMeal: string, strMeal: string, strMealThumb: string }) => {
         const data = await mealAPI.searchMealByName(item.strMeal)
-         return mealAPI.transformMealData(data[0])
+        return mealAPI.transformMealData(data[0])
       })
     )
-    setCatMeal(mealsArray.filter((meal):meal is Recipe => meal !== null))
+    setCatMeal(mealsArray.filter((meal): meal is Recipe => meal !== null))
+    setCategoryByLoading(false)
   }
 
 
@@ -132,6 +124,7 @@ const index = () => {
           )}
         </View>
 
+      
         {/* Categories Horizontal List */}
         <View style={styles.categoriesContainer}>
           <Text style={[styles.categoriesTitle, { color: theme.textLight }]}>Categories</Text>
@@ -141,10 +134,12 @@ const index = () => {
                 key={cat.idCategory}
                 onPress={() => {
                   setMealShowCategory(cat.strCategory);
+                  setCategoryByLoading(true)
+                  setCatMeal([])
                   fetchByCategories(cat.strCategory);
                 }}
               >
-                <Card style={[styles.categoryCard, { backgroundColor: theme.cardLight, shadowColor: theme.shadow }]}>
+                <Card style={[styles.categoryCard, { backgroundColor: mealShowCategory === cat.strCategory ? theme.card : theme.cardLight, shadowColor: theme.shadow }]}>
                   <ImageBackground
                     source={{ uri: cat.strCategoryThumb }}
                     style={styles.categoryImage}
@@ -159,7 +154,9 @@ const index = () => {
             ))}
           </ScrollView>
         </View>
-
+        {categoryByLoading &&
+          <ActivityIndicator animating={true} size={35} style={[styles.loader]} />
+        }
         <MealListByCategory meals={catMeal} />
 
       </SafeAreaView>
@@ -251,5 +248,9 @@ const styles = StyleSheet.create({
   categoriesContainerIn: {
     marginTop: 15,
 
-  }
+  },
+  loader: {
+    marginTop: 50
+  },
+
 })

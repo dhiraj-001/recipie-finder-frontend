@@ -57,6 +57,37 @@ export const mealAPI = {
     }
   },
 
+  getRandomMeals: async (count) =>{
+    let meals = []
+    for(let i=0; i<count; i++){
+      const res = await fetch(`${BASE_URL}/random.php`)
+      const data = await res.json()
+      meals.push(data.meals[0])
+    }
+    return meals
+  },
+
+  searchMealByIngredient: async (query) =>{
+    try {
+    const res = await fetch(`${BASE_URL}/filter.php?i=${query}`)
+    const data = await res.json()
+    return data || []
+    } catch (error) {
+      console.log("Error fetching meals by ingredient",error)
+      return []
+    }
+  },
+  searchMealByArea: async (query) =>{
+    try {
+    const res = await fetch(`${BASE_URL}/filter.php?a=${query}`)
+    const data = await res.json()
+    return data || []
+    } catch (error) {
+      console.log("Error fetching meals by ingredient",error)
+      return []
+    }
+  },
+
   transformMealData: (meal) => {
     if (!meal) return null;
     // Extract ingredients and measures
