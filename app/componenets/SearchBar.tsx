@@ -19,9 +19,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChangeText, placeholder 
     <View style={[styles.searchContainer, { backgroundColor: theme.cardLight, borderColor: theme.border, shadowColor: theme.shadow }]}> 
       <MaterialIcons name="search" size={22} color={theme.secBackGround} style={styles.icon} />
       <TextInput
-        style={[styles.input, { color: theme.secBackGround, backgroundColor: 'transparent' }]}
+        style={[styles.input, { color: theme.background, backgroundColor: 'transparent' }]}
         placeholder={placeholder || 'Search recipes...'}
-        placeholderTextColor={theme.secBackGround}
+        placeholderTextColor={theme.background}
         value={value ?? ''}
         onChangeText={onChangeText}
         autoCapitalize="none"
@@ -30,7 +30,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChangeText, placeholder 
       />
       {(value ?? '').length > 0 && (
         <TouchableOpacity onPress={() => onChangeText('')} style={styles.clearButton}>
-          <MaterialIcons name="close" size={20} color={theme.secBackGround} />
+          <MaterialIcons name="cancel" size={20} color={theme.background} />
         </TouchableOpacity>
       )}
     </View>
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderWidth: 1,
     marginVertical: 10,
-    marginHorizontal: 10,
+    marginHorizontal: 4,
     elevation: 2,
   },
   icon: {

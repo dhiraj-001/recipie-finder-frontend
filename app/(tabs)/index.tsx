@@ -11,8 +11,8 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Octicons from '@expo/vector-icons/Octicons';
 import { mealAPI } from "../../services/mealAPI.js"
 import { ActivityIndicator, Card, Chip } from 'react-native-paper';
-import MealListByCategory from '../componenets/MealListByCategory';
 import { Recipe } from '@/types/types';
+import MealList from '../componenets/MealList';
 // Define Category type
 type Category = {
   idCategory: string;
@@ -124,7 +124,7 @@ const index = () => {
           )}
         </View>
 
-      
+
         {/* Categories Horizontal List */}
         <View style={styles.categoriesContainer}>
           <Text style={[styles.categoriesTitle, { color: theme.textLight }]}>Categories</Text>
@@ -154,10 +154,12 @@ const index = () => {
             ))}
           </ScrollView>
         </View>
+        <Text style={[styles.searchtext, { color: theme.textLight }]}>
+          Recipes for {mealShowCategory}</Text>
         {categoryByLoading &&
           <ActivityIndicator animating={true} size={35} style={[styles.loader]} />
         }
-        <MealListByCategory meals={catMeal} />
+        <MealList meals={catMeal} />
 
       </SafeAreaView>
     </ScrollView>
@@ -251,6 +253,9 @@ const styles = StyleSheet.create({
   },
   loader: {
     marginTop: 50
+  },
+  searchtext: {
+    fontSize: 20,
   },
 
 })

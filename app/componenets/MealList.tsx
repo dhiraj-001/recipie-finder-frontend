@@ -24,9 +24,9 @@ type Props = {
 
 const { width } = Dimensions.get('window');
 const CARD_MARGIN = 5;
-const CARD_WIDTH = (width / 2) - (CARD_MARGIN * 3);
+const CARD_WIDTH = (width / 2) - ((CARD_MARGIN * 4) );
 
-const MealListByCategory: React.FC<Props> = ({ meals }) => {
+const MealList: React.FC<Props> = ({ meals }) => {
   const themeName = useSelector((state: ReturnType<typeof store.getState>) => state.theme.theme);
   const theme = THEMES[themeName as keyof typeof THEMES];
 
@@ -38,7 +38,7 @@ const MealListByCategory: React.FC<Props> = ({ meals }) => {
           <ImageBackground
             source={{ uri: item.thumbnail }}
             style={styles.cardImage}
-            imageStyle={{ borderRadius: 10, height: CARD_WIDTH, width: CARD_WIDTH }}
+            imageStyle={{ borderRadius: 16, }}
           >
             <Text style={[styles.cardText, {
               color: theme.background, borderColor: theme.secBackGround, backgroundColor: theme.border
@@ -64,7 +64,7 @@ const MealListByCategory: React.FC<Props> = ({ meals }) => {
   )
 }
 
-export default MealListByCategory
+export default MealList
 const styles = StyleSheet.create({
   list: {
     marginTop: 20,
@@ -73,13 +73,14 @@ const styles = StyleSheet.create({
     width: CARD_WIDTH,
     height: CARD_WIDTH,
     marginVertical: CARD_MARGIN,
-    borderWidth: 3,
+    borderWidth: 0,
     elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 6,
-    borderRadius: 5,
+    borderRadius: 16,
+    overflow:'hidden'
   },
   cardImage: {
     flex: 1,
