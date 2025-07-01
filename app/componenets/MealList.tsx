@@ -2,12 +2,13 @@ import { ImageBackground, StyleSheet, Text, View, Dimensions, BackHandler, Touch
 import React, { useState } from 'react'
 import { THEMES } from '@/constants/colors';
 import store from '../redux/store';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { FlashList } from '@shopify/flash-list';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import axios from 'axios';
 import { API_URL } from '@/services/FavouriteFetch';
 import {  useUser } from '@clerk/clerk-expo'
+import { toggleFavourite } from '../redux/Slices/FavouritesSlice';
 
 interface Recipe {
   area: string;
@@ -32,22 +33,11 @@ const CARD_WIDTH = (width / 2) - ((CARD_MARGIN * 4) );
 const MealList: React.FC<Props> = ({ meals }) => {
   const {user} = useUser()
   const userId = user?.id
+  const dispatch = useDispatch()
 
   const themeName = useSelector((state: ReturnType<typeof store.getState>) => state.theme.theme);
   const theme = THEMES[themeName as keyof typeof THEMES];
   const [fevRecipies, setFevRecipies] = useState<string[]>([]);
-
-  const addToFev = async (recipeId: string, title: string, image: string) => {
-    setFevRecipies(prev => [...prev, recipeId]);
-    try {
-      await axios.post(`${API_URL}/favourite`, {
-        userId, recipeId, title, image,
-      });
-    } catch (error) {
-      setFevRecipies(prev => prev.filter(id => id !== recipeId));
-      console.log("Error adding favourites", error);
-    }
-  };
 
   return (
     <FlashList
@@ -59,11 +49,22 @@ const MealList: React.FC<Props> = ({ meals }) => {
             style={styles.cardImage}
             imageStyle={{ borderRadius: 16, }}
           >
-            <TouchableOpacity style={[styles.addFevBtn]}
-            onPress={()=>addToFev(item.id,item.name,item.thumbnail)}
+            <TouchableOpacity
+              style={[styles.addFevBtn]}
+              onPress={() =>
+                toggleFavourite({
+                  userId: userId,
+                  recipeId: item.id,
+                  title: item.name,
+                  image: item.thumbnail,
+                  isFavourite: fevRecipies.includes(item.id),
+                })
+              }
             >
               {
-               fevRecipies.includes(item.id) ?  <MaterialIcons name="bookmark-added" size={24} color='#af5ff6' /> : <MaterialIcons name="bookmark-add" size={24} color='#af5ff6' />
+                fevRecipies.includes(item.id)
+                  ? <MaterialIcons name="bookmark-added" size={24} color='#af5ff6' />
+                  : <MaterialIcons name="bookmark-add" size={24} color='#af5ff6' />
               }
            
             </TouchableOpacity>

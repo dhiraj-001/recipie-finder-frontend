@@ -11,12 +11,9 @@ export interface Recipe {
 }
 
 export interface UserFavorite {
-  id: number;
-  userId: string;
-  recipeId: number;
+  userId: string | undefined;
+  recipeId: string;
   title: string;
   image: string;
-  cookTime: string;
-  servings: string;
   createdAt: string; // ISO 8601 date string
 }
