@@ -9,3 +9,14 @@ export interface Recipe {
   thumbnail: string;
   youtube: string;
 }
+
+export interface UserFavorite {
+  id: number;
+  userId: string;
+  recipeId: number;
+  title: string;
+  image: string;
+  cookTime: string;
+  servings: string;
+  createdAt: string; // ISO 8601 date string
+}

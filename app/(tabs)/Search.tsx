@@ -34,12 +34,10 @@ const index = () => {
     if (results.length === 0) {
       const IngredientRes = await mealAPI.searchMealByIngredient(encodeURIComponent(query ?? ''))
       results = IngredientRes
-      console.log("ingr", results)
     }
 
     if (results.length === 0) {
       results = await mealAPI.searchMealByArea(query)
-
     }
 
     return results.map((meal: any) => mealAPI.transformMealData(meal)).filter((meal: any) => meal !== null)

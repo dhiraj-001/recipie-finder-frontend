@@ -4,7 +4,6 @@ import { useColorScheme } from "react-native";
 import { useEffect } from "react";
 import { setTheme, switchTheme } from '../redux/Slices/themeSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useClerk } from '@clerk/clerk-expo'
 import { THEMES } from '@/constants/colors';
 import store from '../redux/store';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -13,6 +12,10 @@ import { mealAPI } from "../../services/mealAPI.js"
 import { ActivityIndicator, Card, Chip } from 'react-native-paper';
 import { Recipe } from '@/types/types';
 import MealList from '../componenets/MealList';
+import axios from 'axios';
+import { API_URL } from '@/services/FavouriteFetch';
+import { addFavoruites, fetchFavorites } from '../redux/Slices/FavouritesSlice';
+import { useUser } from '@clerk/clerk-expo';
 // Define Category type
 type Category = {
   idCategory: string;
@@ -21,8 +24,8 @@ type Category = {
   strCategoryThumb: string;
 };
 
-
 const index = () => {
+
   const color = useColorScheme()
   const dispatch = useDispatch()
 
@@ -42,6 +45,9 @@ const index = () => {
   const [catMeal, setCatMeal] = useState<Recipe[]>([]);
   const [mealShowCategory, setMealShowCategory] = useState<string>('')
   const [categoryByLoading, setCategoryByLoading] = useState<boolean>(false)
+  const { user } = useUser()
+  const userId= user?.id
+
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -84,6 +90,12 @@ const index = () => {
     setCategoryByLoading(false)
   }
 
+ let fav = useSelector((state: ReturnType<typeof store.getState>) => state.favourites.favourites)
+
+useEffect(()=>{
+  if(userId) dispatch(fetchFavorites(userId))
+ 
+},[dispatch,userId])
 
 
   return (
@@ -112,7 +124,9 @@ const index = () => {
                 imageStyle={{ borderRadius: 16 }}
               >
                 <Chip icon="star" mode='flat' style={[styles.featuredChip, { backgroundColor: theme.background, borderColor: theme.border }]}>Featured</Chip>
-
+                <TouchableOpacity style={[styles.addFevBtn, { backgroundColor: theme.textLight }]}>
+                  <MaterialIcons name="bookmark-add" size={30} color='#af5ff6' />
+                </TouchableOpacity>
                 <View style={{ backgroundColor: 'rgba(3, 14, 68, 0.4)', padding: 10 }}>
                   <Text style={[styles.featuredHeadTxt, { color: theme.textLight }]}>
                     {featured.name}
@@ -139,7 +153,7 @@ const index = () => {
                   fetchByCategories(cat.strCategory);
                 }}
               >
-                <Card style={[styles.categoryCard, { backgroundColor: mealShowCategory === cat.strCategory ? theme.card : theme.cardLight, shadowColor: theme.shadow }]}>
+                <Card style={[styles.categoryCard, { backgroundColor: mealShowCategory === cat.strCategory ? theme.card : theme.cardLight, shadowColor: theme.shadow, borderColor: theme.border, borderWidth: mealShowCategory === cat.strCategory ? 2 : 0 }]}>
                   <ImageBackground
                     source={{ uri: cat.strCategoryThumb }}
                     style={styles.categoryImage}
@@ -257,5 +271,10 @@ const styles = StyleSheet.create({
   searchtext: {
     fontSize: 20,
   },
-
+  addFevBtn: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    padding: 5
+  }
 })

@@ -1,10 +1,13 @@
-import { ImageBackground, StyleSheet, Text, View, Dimensions, BackHandler } from 'react-native'
-import React from 'react'
+import { ImageBackground, StyleSheet, Text, View, Dimensions, BackHandler, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
 import { THEMES } from '@/constants/colors';
 import store from '../redux/store';
 import { useSelector } from 'react-redux';
 import { FlashList } from '@shopify/flash-list';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import axios from 'axios';
+import { API_URL } from '@/services/FavouriteFetch';
+import {  useUser } from '@clerk/clerk-expo'
 
 interface Recipe {
   area: string;
@@ -27,8 +30,24 @@ const CARD_MARGIN = 5;
 const CARD_WIDTH = (width / 2) - ((CARD_MARGIN * 4) );
 
 const MealList: React.FC<Props> = ({ meals }) => {
+  const {user} = useUser()
+  const userId = user?.id
+
   const themeName = useSelector((state: ReturnType<typeof store.getState>) => state.theme.theme);
   const theme = THEMES[themeName as keyof typeof THEMES];
+  const [fevRecipies, setFevRecipies] = useState<string[]>([]);
+
+  const addToFev = async (recipeId: string, title: string, image: string) => {
+    setFevRecipies(prev => [...prev, recipeId]);
+    try {
+      await axios.post(`${API_URL}/favourite`, {
+        userId, recipeId, title, image,
+      });
+    } catch (error) {
+      setFevRecipies(prev => prev.filter(id => id !== recipeId));
+      console.log("Error adding favourites", error);
+    }
+  };
 
   return (
     <FlashList
@@ -40,6 +59,14 @@ const MealList: React.FC<Props> = ({ meals }) => {
             style={styles.cardImage}
             imageStyle={{ borderRadius: 16, }}
           >
+            <TouchableOpacity style={[styles.addFevBtn]}
+            onPress={()=>addToFev(item.id,item.name,item.thumbnail)}
+            >
+              {
+               fevRecipies.includes(item.id) ?  <MaterialIcons name="bookmark-added" size={24} color='#af5ff6' /> : <MaterialIcons name="bookmark-add" size={24} color='#af5ff6' />
+              }
+           
+            </TouchableOpacity>
             <Text style={[styles.cardText, {
               color: theme.background, borderColor: theme.secBackGround, backgroundColor: theme.border
             }]}>{item.name}</Text>
@@ -102,6 +129,11 @@ const styles = StyleSheet.create({
     gap:7,
     paddingHorizontal:7,
     paddingBottom:7
+  },
+  addFevBtn:{
+    position:'absolute',
+    right:5,
+    top:5
   }
 
 });
